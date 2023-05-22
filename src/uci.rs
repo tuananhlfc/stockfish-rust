@@ -175,8 +175,8 @@ fn handle_position(position: &mut Position, tokens: &Vec<&str>) {
         "fen" => get_fen_str(&tokens[2..]),
         _ => return,
     };
-
     position.set_position(fen.as_str());
+
     let moves_idx = tokens.iter().position(|&x| x == "moves");
     if let Some(idx) = moves_idx {
         for m in tokens[(idx + 1)..].iter() {
