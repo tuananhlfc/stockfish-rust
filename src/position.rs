@@ -51,6 +51,12 @@ impl Position {
     }
     pub fn do_move(&mut self, m: &str) {
         println!("Move {m}")
+        // check if castling
+        // check if captured
+        // update hash key
+        // reset en passant
+        // update castling rights
+        // move the piece
     }
     fn set_piece(&mut self, pc: usize, sq: usize) {
         // println!("Sq {sq} = {pc}")

@@ -130,7 +130,7 @@ pub fn uci_loop() {
             "uci" => handle_uci(&options_map),
             "setoption" => setoption(input),
             "go" => handle_go(),
-            "position" => handle_position(&mut position, tokens),
+            "position" => handle_position(&mut position, &tokens),
             "ucinewgame" => (),
             "isready" => handle_is_ready(),
             _ => continue,
@@ -165,7 +165,7 @@ fn setoption(stream: &str) {
     println!("{stream}");
 }
 
-fn handle_position(position: &mut Position, tokens: Vec<&str>) {
+fn handle_position(position: &mut Position, tokens: &Vec<&str>) {
     // this function could be refactor
     if tokens.len() < 2 {
         return;
