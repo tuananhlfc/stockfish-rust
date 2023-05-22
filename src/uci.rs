@@ -1,4 +1,8 @@
+// use std::error::Error;
 use std::{collections::HashMap, io};
+
+use crate::position::Position;
+use crate::types::*;
 
 struct UciOption {
     value_type: String,
@@ -110,6 +114,7 @@ fn uci_init<'a>() -> HashMap<&'a str, UciOption> {
 
 pub fn uci_loop() {
     let options_map = uci_init();
+    let mut position = Position::new();
     loop {
         let mut line = String::new();
         io::stdin()
@@ -124,8 +129,8 @@ pub fn uci_loop() {
             "ponderhit" => (),
             "uci" => handle_uci(&options_map),
             "setoption" => setoption(input),
-            "go" => (),
-            "position" => handle_position(tokens),
+            "go" => handle_go(),
+            "position" => handle_position(&mut position, tokens),
             "ucinewgame" => (),
             "isready" => handle_is_ready(),
             _ => continue,
@@ -160,26 +165,38 @@ fn setoption(stream: &str) {
     println!("{stream}");
 }
 
-fn handle_position(tokens: Vec<&str>) {
+fn handle_position(position: &mut Position, tokens: Vec<&str>) {
+    // this function could be refactor
     if tokens.len() < 2 {
         return;
     }
     let fen = match tokens[1].to_lowercase().as_str() {
-        "startpos" => "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1".to_string(),
+        "startpos" => START_POS_FEN.to_string(),
         "fen" => get_fen_str(&tokens[2..]),
         _ => return,
     };
-    // position.set(fen)
+
+    position.set_position(fen.as_str());
+    let moves_idx = tokens.iter().position(|&x| x == "moves");
+    if let Some(idx) = moves_idx {
+        for m in tokens[(idx + 1)..].iter() {
+            position.do_move(m);
+        }
+    }
 }
 
 fn get_fen_str(words: &[&str]) -> String {
     let mut fen: String = Default::default();
     for w in words.iter() {
         if *w == "moves" {
-            break
+            break;
         }
         fen.push_str(w);
         fen.push_str(" ");
     }
     fen
+}
+
+fn handle_go() {
+    // start counting time
 }
