@@ -1,5 +1,5 @@
 mod position;
-mod state_info;
+mod search;
 mod types;
 mod uci;
 
